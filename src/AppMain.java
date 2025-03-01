@@ -1,13 +1,21 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import Model.Vehiculo;
 import Model.Aparcamiento;
+
 import tools.Menu;
 
 public class AppMain {
 
-	
+	public static final String STORAGE = "Aparcamiento.dat";
 	public Aparcamiento apm;	// = new Aparcamiento("GOYA");
+	
 	public static Vehiculo[] listaEjemplo =  {
 		new Vehiculo("4444-ABC","ROJO",1900),
 		new Vehiculo("5555-ABC","AZUL",1901),
@@ -37,12 +45,13 @@ public class AppMain {
 		String[] opc = {
 				"Añadir Vehículo",
 				"Eliminar Vehículo",
-				"Listar Vehículo",
+				"Listar listVehiculos",
+				"Listar mapVehiculos",
 				"Estadísticas"
 		};
 		
 		init();
-		cuentaColores(apm.getListaVehiculos());
+
 		m.setTitulo("APARCAMIENTO : " + apm.getNombre());
 		m.setOpciones(opc);
 		while (!salir) {
@@ -62,9 +71,13 @@ public class AppMain {
 				listVehiculos();
 				break;
 			case 4:
+				mapVehiculos();
+				break;
+			case 5:
 				estadisticas();
 				break;
 			case 0: 
+				save();
 				salir = true;
 			} // opciones			
 			
@@ -88,7 +101,11 @@ public class AppMain {
 			System.out.print("Dime el año :");
 			Integer fecha = sc.nextInt();
 			// Añadirlo a la lista de vehiculos
-			apm.getListaVehiculos().add(new Vehiculo(matricula,color,fecha));
+			Vehiculo v = new Vehiculo(matricula,color,fecha);
+			apm.getListaVehiculos().add(v);
+			// Añadir usando DaoVehiculoMap , uso persistenica de forma transparente
+			apm.mapVehiculos.insertOne(v);
+			
 		}
 		
 		
@@ -96,19 +113,50 @@ public class AppMain {
 	public void deleteVehiculo() {
 		
 		String matricula = pedirMatricula();
-		Integer valor = comprobarMatricula(matricula);
+
+		int valor = comprobarMatricula(matricula); // Comprobación dependiente del ArrayList
 		if (valor == -1) {
 			System.out.println("No existe un vehículo en el aparcamiento");
 		}
 		else {
-			// Añadirlo a la lista de vehiculos
+			// Eliminarlo de la lista de vehiculos
 			apm.getListaVehiculos().remove(valor);
+			// Añadir usando DaoVehiculoMap , uso persistenica de forma transparente
 		}
+		// Usando el objeto Dao. Ya no lo implemento en el main
+		apm.mapVehiculos.deleteOne(apm.mapVehiculos.findKeyByMatricula(matricula));
+		valor = valor;
+	};
+	public void listVehiculos() {
 		
+		System.out.println("\n" + justifica("MATRICULA",10)+justifica("COLOR",10)+justifica("AÑO",5));
+		System.out.println("-".repeat(25));
+		for (Vehiculo v : apm.getListaVehiculos()) {
+			System.out.println(	justifica(v.getMatricula(),10)+
+								justifica(v.getColor(),10)+
+								justifica(""+ v.getFecha(),5));
+			
+		}
+		System.out.println();
+	};
+	public void estadisticas() {
+		cuentaColores(apm.getListaVehiculos());
 		
 	};
-	public void listVehiculos() {};
-	public void estadisticas() {};
+	
+	public void mapVehiculos() {
+		
+		System.out.println("\n" + justifica("MATRICULA",10)+justifica("COLOR",10)+justifica("AÑO",5));
+		System.out.println("-".repeat(25));
+		for (Vehiculo v : apm.mapVehiculos.findAll().values()) {
+			System.out.println(	justifica(v.getMatricula(),10)+
+								justifica(v.getColor(),10)+
+								justifica(""+ v.getFecha(),5));
+			
+		}
+		System.out.println();
+	};
+
 	
 	/**
 	 * Devuelve un array con los colores distintos que existen en el aparcamiento
@@ -166,11 +214,77 @@ public class AppMain {
 		
 	}
 	public void init() {
-		this.apm = new Aparcamiento();
-		this.apm.setNombre("GOYA");
-		for (int i=0;i<listaEjemplo.length;i++ ) {
-			this.apm.getListaVehiculos().add(listaEjemplo[i]);
-		}
+	      File file = new File(STORAGE); // Verifica si el archivo existe
+	      if (file.exists()) {
+	        	
+	        	System.out.println("Recuperando información almacenada");
+	            load();			// Método simple no recupera información DAO
+	            // Regenera DAO
+				for (int i=0;i<apm.getListaVehiculos().size();i++ ) {
+					this.apm.mapVehiculos.insertOne(apm.getListaVehiculos().get(i));
+			 }
+	        }
+	        else {
+	        		System.out.println("Generando datos de prueba");
+					this.apm = new Aparcamiento();
+					this.apm.setNombre("GOYA");
+					for (int i=0;i<listaEjemplo.length;i++ ) {
+						this.apm.getListaVehiculos().add(listaEjemplo[i]);
+						// Usar objeto Dao
+						this.apm.mapVehiculos.insertOne(listaEjemplo[i]);
+				 }
+	        }
+	} // init()
+	/**
+	 * Hace una copia completa del contenido del objeto Aparcamiento
+	 * que utiliza la aplicación. Se salvan también todos los Vehículos registrados
+	 * 
+	 * @return operación realizada con éxito true, false en caso contrario
+	 */
+	public boolean save() {
+		boolean result = false;
+	       try 	{
+			   	  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(STORAGE)); 
+			               oos.writeObject(apm);
+			               result = true;
+			   	} catch (IOException e) {
+			   		result = false;
+			   		e.printStackTrace();
+			   		}  
+				return result;
+	} // save
+	
+	/**
+	 * Recupera la copia del último contenido del objeto Aparcamiento
+	 * almacenado. Se salvan también todos los Vehículos registrados
+	 * 
+	 * @return operación realizada con éxito true, false en caso contrario
+	 */
+	public boolean load() {
+		boolean result = false;
+        try
+        { 
+     		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(STORAGE)); 
+        		apm = (Aparcamiento) ois.readObject();
+        		result = true;
+        } catch (IOException | ClassNotFoundException e) { 
+		result = false;
+		//e.printStackTrace();
+		} 	
+		
+		return result;
+		
 	}
-
+	
+	/**
+	 * Función auxiliar para justificar con espacios el contenido del string
+	 * @param cad Cadena original 
+	 * @param numero anchura total
+	 * @return cadena rellenada con espacios justificada a la izquierda.
+	 */
+	private String justifica(String cad,int numero) {	
+		
+		return String.format("%1$-" + numero + "s", cad); // justifica a la izq , añadir %1$- para dcha
+	}
+	
 }

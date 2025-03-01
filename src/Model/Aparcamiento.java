@@ -1,15 +1,17 @@
 package Model;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class Aparcamiento {
+public class Aparcamiento  implements Serializable {
 
 	private String nombre;
-	private ArrayList<Vehiculo> listaVehiculos = new ArrayList<Vehiculo>();
-	
-	
+	private ArrayList<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
+	public DaoVehiculoMap mapVehiculos = new DaoVehiculoMap();
+	private static final long serialVersionUID = 1L;
 	
 	public Aparcamiento() {
-		
+		  
 	}
 
 
@@ -20,9 +22,9 @@ public class Aparcamiento {
 
 	public String getNombre() 								 {	return nombre;	}
 	public void setNombre(String nombre) 					 {	this.nombre = nombre;	}
-	public ArrayList<Vehiculo> getListaVehiculos() 			 {	return listaVehiculos;	}
-	public void setListVehiculos(ArrayList<Vehiculo> plazas) {	this.listaVehiculos = plazas;	}
-
+	public ArrayList<Vehiculo> getListaVehiculos() 			 {	return listVehiculos;	}
+	public void setListVehiculos(ArrayList<Vehiculo> plazas) {	this.listVehiculos = plazas;	}
+	
 	
 	
 }

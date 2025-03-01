@@ -6,9 +6,9 @@ import java.util.ArrayList;
 public class DaoVehiculoList implements DaoList<Vehiculo>{
 
 	public ArrayList<Vehiculo> listaVehiculos = new ArrayList<Vehiculo>();
-	private static Integer id=1;
+	
 	public DaoVehiculoList() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	
@@ -41,8 +41,6 @@ public class DaoVehiculoList implements DaoList<Vehiculo>{
 		boolean result = false;
 		
 		//--- 
-
-
 		return result;
 	}
 

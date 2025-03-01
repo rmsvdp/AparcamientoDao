@@ -1,10 +1,13 @@
 package Model;
 
-public class Vehiculo {
+import java.io.Serializable;
+
+public class Vehiculo implements Serializable {
 
 	private String matricula;
 	private String color;
 	private int fecha;
+	private static final long serialVersionUID = 1L;
 	
 	public Vehiculo() {
 		// TODO Auto-generated constructor stub
