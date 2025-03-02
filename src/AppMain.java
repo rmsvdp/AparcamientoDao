@@ -11,11 +11,25 @@ import Model.Aparcamiento;
 
 import tools.Menu;
 
+/**
+ * Aparcamiento DAO versión 0
+ * 
+ * - Almacenamiento en memoria a través de disco (archivo binario)
+ * - Gestión propietaria de datos mediante colecciones
+ * - Gestión a través de clase DAO de datos mediante HashMap
+ * - Ambos sistemas de almacenamiento sincronizados 
+ */
 public class AppMain {
 
+	/**
+	 * Nombre del archivo de almacenamiento en disco.
+	 */
 	public static final String STORAGE = "Aparcamiento.dat";
-	public Aparcamiento apm;	// = new Aparcamiento("GOYA");
+	public Aparcamiento apm;	
 	
+	/**
+	 * Datos de prueba
+	 */
 	public static Vehiculo[] listaEjemplo =  {
 		new Vehiculo("4444-ABC","ROJO",1900),
 		new Vehiculo("5555-ABC","AZUL",1901),
@@ -30,6 +44,10 @@ public class AppMain {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Lanzador estático
+	 * @param args -- Se ignoran parámetros
+	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		AppMain ap = new AppMain();
@@ -37,6 +55,9 @@ public class AppMain {
 		
 	} // end Main
 
+	/**
+	 * Lanzador no estático de la aplicación (Método principal)
+	 */
 	public void run() {
 		
 		Menu m = new Menu();
@@ -77,6 +98,7 @@ public class AppMain {
 				estadisticas();
 				break;
 			case 0: 
+				System.out.println("\nVolcando información a disco...\n");
 				save();
 				salir = true;
 			} // opciones			
@@ -85,7 +107,9 @@ public class AppMain {
 		
 	} // end run
 
-
+/**
+ * Añade un vehículo nuevo al sistema
+ */
 	public void addVehiculo() {
 		
 		String matricula = pedirMatricula();
@@ -110,6 +134,9 @@ public class AppMain {
 		
 		
 	};
+	/**
+	 * Elimina un vehículo a partir de su matrícula
+	 */
 	public void deleteVehiculo() {
 		
 		String matricula = pedirMatricula();
@@ -127,6 +154,12 @@ public class AppMain {
 		apm.mapVehiculos.deleteOne(apm.mapVehiculos.findKeyByMatricula(matricula));
 		valor = valor;
 	};
+	
+	/**
+	 * Genera un listado de los vehículos registrados en el aparcamiento, utilizando
+	 * la colección listVehiculos
+	 */
+	
 	public void listVehiculos() {
 		
 		System.out.println("\n" + justifica("MATRICULA",10)+justifica("COLOR",10)+justifica("AÑO",5));
@@ -139,10 +172,19 @@ public class AppMain {
 		}
 		System.out.println();
 	};
+	
+	/**
+	 * Genera la estadísticas del aparcamiento
+	 */
 	public void estadisticas() {
 		cuentaColores(apm.getListaVehiculos());
 		
 	};
+	
+	/**
+	 * Genera un listado de los vehículos registrados en el aparcamiento, utilizando
+	 * el HashMap mapVehiculos
+	 */
 	
 	public void mapVehiculos() {
 		
@@ -174,6 +216,10 @@ public class AppMain {
 		
 	}
 	
+	/**
+	 * Algoritmo para generar las estadísticas de colores de los vehículos registrados
+	 * @param alv Colección ArrayList de vehículos
+	 */
 	public void cuentaColores(ArrayList<Vehiculo> alv) {
 		ArrayList<String> als = distinctColor(alv);
 		Integer[] numero = new Integer[als.size()];
@@ -191,6 +237,12 @@ public class AppMain {
 		}
 	}
 	
+	/**
+	 * Solicita la entrada de la matrícula por consola
+	 * TODO:  no se hace ninguna comprobación de formato
+	 * @return matrícula con los 3 caracteres de letra en mayúscula
+	 * 
+	 */
 	public String pedirMatricula() {
 		Scanner sc = new Scanner(System.in);
 			System.out.println("Introduce Matricula");
@@ -198,6 +250,12 @@ public class AppMain {
 		return matricula.toUpperCase();
 	}
 	
+	/**
+	 * Recupera el índice del vehículo que tiene la matricula especificada
+	 * de la colección listVehiculos del aparcamiento
+	 * @param matricula Matrícula de búsqueda
+	 * @return -1 : No encontrada >=0 : Índice dentro de la lista
+	 */
 	public int comprobarMatricula(String matricula) {
 		int result =  -1;
 		ArrayList<Vehiculo> al;
@@ -213,11 +271,17 @@ public class AppMain {
 		return result;
 		
 	}
+	
+	/**
+	 * Método de inicialización de la aplicación
+	 * - Recupera datos almacenados en disco o genera un set de pruebas
+	 * 
+	 */
 	public void init() {
 	      File file = new File(STORAGE); // Verifica si el archivo existe
 	      if (file.exists()) {
 	        	
-	        	System.out.println("Recuperando información almacenada");
+	        	System.out.println("\nRecuperando información almacenada...\n");
 	            load();			// Método simple no recupera información DAO
 	            // Regenera DAO
 				for (int i=0;i<apm.getListaVehiculos().size();i++ ) {
@@ -225,7 +289,7 @@ public class AppMain {
 			 }
 	        }
 	        else {
-	        		System.out.println("Generando datos de prueba");
+	        		System.out.println("\nGenerando datos de prueba ...\n");
 					this.apm = new Aparcamiento();
 					this.apm.setNombre("GOYA");
 					for (int i=0;i<listaEjemplo.length;i++ ) {
