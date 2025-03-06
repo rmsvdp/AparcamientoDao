@@ -73,6 +73,26 @@ public class DaoVehiculoList implements DaoList<Vehiculo>{
 		return result;
 	}
 	
+	/**
+	 * Recupera de un fichero de texto en formato csv una lsita de vehículos
+	 * y los vuelca en el array List
+	 * @param fichero
+	 * @return true : Operación realizada con éxito , false: Error
+	 */
+	public boolean loadAll(String fichero) {
+		boolean result = false;
+		return result;
+	}
 	
+	/**
+	 * Almacena en un fichero de texto en formato csv el contenido 
+	 * del array List
+	 * @param fichero
+	 * @return true : Operación realizada con éxito , false: Error
+	 */
+	public boolean saveAll(String fichero) {
+		boolean result = false;
+		return result;
+	}
 
 }
