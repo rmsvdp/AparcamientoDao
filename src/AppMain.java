@@ -126,7 +126,8 @@ public class AppMain {
 			Integer fecha = sc.nextInt();
 			// Añadirlo a la lista de vehiculos
 			Vehiculo v = new Vehiculo(matricula,color,fecha);
-			apm.getListaVehiculos().add(v);
+			apm.lstVehiculos.insertOne(v);
+			//apm.getListaVehiculos().add(v);
 			// Añadir usando DaoVehiculoMap , uso persistenica de forma transparente
 			apm.mapVehiculos.insertOne(v);
 			
@@ -147,7 +148,8 @@ public class AppMain {
 		}
 		else {
 			// Eliminarlo de la lista de vehiculos
-			apm.getListaVehiculos().remove(valor);
+			//apm.getListaVehiculos().remove(valor);
+			apm.lstVehiculos.deleteOne(matricula);
 			// Añadir usando DaoVehiculoMap , uso persistenica de forma transparente
 		}
 		// Usando el objeto Dao. Ya no lo implemento en el main
@@ -164,7 +166,7 @@ public class AppMain {
 		
 		System.out.println("\n" + justifica("MATRICULA",10)+justifica("COLOR",10)+justifica("AÑO",5));
 		System.out.println("-".repeat(25));
-		for (Vehiculo v : apm.getListaVehiculos()) {
+		for (Vehiculo v : apm.lstVehiculos.findAll()) {
 			System.out.println(	justifica(v.getMatricula(),10)+
 								justifica(v.getColor(),10)+
 								justifica(""+ v.getFecha(),5));
@@ -307,6 +309,8 @@ public class AppMain {
 	 */
 	public boolean save() {
 		boolean result = false;
+		
+		/*
 	       try 	{
 			   	  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(STORAGE)); 
 			               oos.writeObject(apm);
@@ -316,6 +320,8 @@ public class AppMain {
 			   		e.printStackTrace();
 			   		}  
 				return result;
+		*/	
+		return result;
 	} // save
 	
 	/**
@@ -326,8 +332,12 @@ public class AppMain {
 	 */
 	public boolean load() {
 		boolean result = false;
-        try
+        
+		
+		/*
+		try
         { 
+        	
      		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(STORAGE)); 
         		apm = (Aparcamiento) ois.readObject();
         		result = true;
@@ -335,6 +345,7 @@ public class AppMain {
 		result = false;
 		//e.printStackTrace();
 		} 	
+		*/
 		
 		return result;
 		

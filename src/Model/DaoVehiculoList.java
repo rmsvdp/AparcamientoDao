@@ -72,5 +72,7 @@ public class DaoVehiculoList implements DaoList<Vehiculo>{
 		
 		return result;
 	}
+	
+	
 
 }

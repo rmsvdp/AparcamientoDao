@@ -8,6 +8,8 @@ public class Aparcamiento  implements Serializable {
 	private String nombre;
 	private ArrayList<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
 	public DaoVehiculoMap mapVehiculos = new DaoVehiculoMap();
+	public DaoVehiculoList lstVehiculos = new DaoVehiculoList();
+	
 	private static final long serialVersionUID = 1L;
 	
 	public Aparcamiento() {
