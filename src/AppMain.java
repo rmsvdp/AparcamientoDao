@@ -99,7 +99,7 @@ public class AppMain {
 				break;
 			case 0: 
 				System.out.println("\nVolcando información a disco...\n");
-				save();
+				save(STORAGE); // Guarda la información
 				salir = true;
 			} // opciones			
 			
@@ -150,10 +150,10 @@ public class AppMain {
 			// Eliminarlo de la lista de vehiculos
 			//apm.getListaVehiculos().remove(valor);
 			apm.lstVehiculos.deleteOne(matricula);
-			// Añadir usando DaoVehiculoMap , uso persistenica de forma transparente
+			// Usando el objeto Dao Map
+			apm.mapVehiculos.deleteOne(apm.mapVehiculos.findKeyByMatricula(matricula));
 		}
-		// Usando el objeto Dao. Ya no lo implemento en el main
-		apm.mapVehiculos.deleteOne(apm.mapVehiculos.findKeyByMatricula(matricula));
+
 		valor = valor;
 	};
 	
@@ -284,7 +284,7 @@ public class AppMain {
 	      if (file.exists()) {
 	        	
 	        	System.out.println("\nRecuperando información almacenada...\n");
-	            load();			// Método simple no recupera información DAO
+	            load(STORAGE);			// Método simple no recupera información DAO
 	            // Regenera DAO
 				for (int i=0;i<apm.getListaVehiculos().size();i++ ) {
 					this.apm.mapVehiculos.insertOne(apm.getListaVehiculos().get(i));
@@ -307,20 +307,12 @@ public class AppMain {
 	 * 
 	 * @return operación realizada con éxito true, false en caso contrario
 	 */
-	public boolean save() {
+	public boolean save(String fichero) {
 		boolean result = false;
 		
-		/*
-	       try 	{
-			   	  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(STORAGE)); 
-			               oos.writeObject(apm);
-			               result = true;
-			   	} catch (IOException e) {
-			   		result = false;
-			   		e.printStackTrace();
-			   		}  
-				return result;
-		*/	
+		// TODO salvar aparcamiento completo	
+		//	 apm.lstVehiculos.saveAll(fichero); // salva lstVehiculos;
+		
 		return result;
 	} // save
 	
@@ -330,22 +322,12 @@ public class AppMain {
 	 * 
 	 * @return operación realizada con éxito true, false en caso contrario
 	 */
-	public boolean load() {
+	public boolean load(String fichero) {
 		boolean result = false;
         
-		
-		/*
-		try
-        { 
-        	
-     		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(STORAGE)); 
-        		apm = (Aparcamiento) ois.readObject();
-        		result = true;
-        } catch (IOException | ClassNotFoundException e) { 
-		result = false;
-		//e.printStackTrace();
-		} 	
-		*/
+		// TODO salvar aparcamiento completo
+		// apm.lstVehiculos.loadAll(fichero); // recupera lstVehiculos;
+
 		
 		return result;
 		

@@ -1,9 +1,15 @@
 package Model;
 
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class DaoVehiculoList implements DaoList<Vehiculo>{
+public class DaoVehiculoList implements DaoList<Vehiculo>, Serializable {
 
 	public ArrayList<Vehiculo> listaVehiculos = new ArrayList<Vehiculo>();
 	
@@ -81,6 +87,18 @@ public class DaoVehiculoList implements DaoList<Vehiculo>{
 	 */
 	public boolean loadAll(String fichero) {
 		boolean result = false;
+		/*************** Serialización binaria java *************
+		try
+        { 
+        	
+     		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fichero)); 
+        		listaVehiculos = (ArrayList<Vehiculo>) ois.readObject();
+        		result = true;
+        } catch (IOException | ClassNotFoundException e) { 
+		result = false;
+		//e.printStackTrace();
+		}
+		***************************************************************/
 		return result;
 	}
 	
@@ -92,6 +110,17 @@ public class DaoVehiculoList implements DaoList<Vehiculo>{
 	 */
 	public boolean saveAll(String fichero) {
 		boolean result = false;
+		
+		/*************** Serialización binaria java *************
+	       try 	{
+			   	  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fichero)); 
+			               oos.writeObject(listaVehiculos);
+			               result = true;
+			   	} catch (IOException e) {
+			   		result = false;
+			   		//e.printStackTrace();
+			   		}  
+		*********************************************************/	
 		return result;
 	}
 
