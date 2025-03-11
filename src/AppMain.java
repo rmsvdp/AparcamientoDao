@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import Model.Vehiculo;
+import controller.Controlador;
 import Model.Aparcamiento;
 
 import tools.Menu;
@@ -68,13 +70,15 @@ public class AppMain {
 				"Eliminar Vehículo",
 				"Listar listVehiculos",
 				"Listar mapVehiculos",
-				"Estadísticas"
+				"Estadísticas",
+				"Demo"
 		};
 		
 		init();
 
 		m.setTitulo("APARCAMIENTO : " + apm.getNombre());
 		m.setOpciones(opc);
+		Controlador c = new Controlador(10,10);
 		while (!salir) {
 			
 			m.mostrar();// Mostrar el menú
@@ -96,6 +100,18 @@ public class AppMain {
 				break;
 			case 5:
 				estadisticas();
+				break;
+			case 6:
+				Color co = c.av.amarillo;
+				c.av.squareDemo(co, 0);
+				c.av.Item_Color(3, 2, co);
+				c.av.Item_Color(3, 7, co);
+				c.av.Item_Color(5, 4, co);
+				c.av.Item_Color(5, 5, co);
+				c.av.Item_Color(7, 3, co);
+				c.av.Item_Color(7, 4, co);
+				c.av.Item_Color(7, 5, co);
+				c.av.Item_Color(7, 6, co);
 				break;
 			case 0: 
 				System.out.println("\nVolcando información a disco...\n");
@@ -284,20 +300,20 @@ public class AppMain {
 	      if (file.exists()) {
 	        	
 	        	System.out.println("\nRecuperando información almacenada...\n");
-	            load(STORAGE);			// Método simple no recupera información DAO
+	            load(STORAGE);			// Método simple recupera información
 	            // Regenera DAO
-				for (int i=0;i<apm.getListaVehiculos().size();i++ ) {
-					this.apm.mapVehiculos.insertOne(apm.getListaVehiculos().get(i));
-			 }
+//				for (int i=0;i<apm.getListaVehiculos().size();i++ ) {
+//					this.apm.mapVehiculos.insertOne(apm.getListaVehiculos().get(i));
+//			 }
 	        }
 	        else {
 	        		System.out.println("\nGenerando datos de prueba ...\n");
 					this.apm = new Aparcamiento();
 					this.apm.setNombre("GOYA");
 					for (int i=0;i<listaEjemplo.length;i++ ) {
-						this.apm.getListaVehiculos().add(listaEjemplo[i]);
+						this.apm.lstVehiculos.insertOne(listaEjemplo[i]);
 						// Usar objeto Dao
-						this.apm.mapVehiculos.insertOne(listaEjemplo[i]);
+//						this.apm.mapVehiculos.insertOne(listaEjemplo[i]);
 				 }
 	        }
 	} // init()
@@ -311,7 +327,12 @@ public class AppMain {
 		boolean result = false;
 		
 		// TODO salvar aparcamiento completo	
-		//	 apm.lstVehiculos.saveAll(fichero); // salva lstVehiculos;
+		try {
+			apm.lstVehiculos.saveAll(fichero);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // salva lstVehiculos;
 		
 		return result;
 	} // save
@@ -323,11 +344,12 @@ public class AppMain {
 	 * @return operación realizada con éxito true, false en caso contrario
 	 */
 	public boolean load(String fichero) {
-		boolean result = false;
-        
-		// TODO salvar aparcamiento completo
-		// apm.lstVehiculos.loadAll(fichero); // recupera lstVehiculos;
 
+		boolean result = false;
+ 		
+		this.apm = new Aparcamiento(); // TODO recuperar también la información de aparcamiento
+		this.apm.setNombre("GOYA");			
+		apm.lstVehiculos.loadAll(fichero); // recupera lstVehiculos;
 		
 		return result;
 		

@@ -108,7 +108,7 @@ public class DaoVehiculoList implements DaoList<Vehiculo>, Serializable {
 	 * @param fichero
 	 * @return true : Operación realizada con éxito , false: Error
 	 */
-	public boolean saveAll(String fichero) {
+	public boolean saveAll(String fichero) throws IOException {
 		boolean result = false;
 		
 		/*************** Serialización binaria java *************
