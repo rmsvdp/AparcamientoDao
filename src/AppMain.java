@@ -275,8 +275,7 @@ public class AppMain {
 	        }
 	        else {
 	        		System.out.println("\nGenerando datos de prueba ...\n");
-					this.apm = new Aparcamiento();
-					this.apm.setNombre("GOYA");
+					this.apm = new Aparcamiento("GOYA");
 					for (int i=0;i<listaEjemplo.length;i++ ) {
 						this.apm.lstVehiculos.insertOne(listaEjemplo[i]);
 				 }
@@ -312,8 +311,7 @@ public class AppMain {
 
 		boolean result = false;
  	
-		this.apm = new Aparcamiento(); // TODO recuperar también la información de aparcamiento
-		this.apm.setNombre("GOYA");			
+		this.apm = new Aparcamiento("GOYA"); // TODO presevar objeto aparacmiento			
 		apm.lstVehiculos.loadAll(fichero); // recupera lstVehiculos;	
 		return result;
 		

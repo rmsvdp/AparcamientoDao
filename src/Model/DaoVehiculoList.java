@@ -1,8 +1,12 @@
 package Model;
 
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -87,18 +91,21 @@ public class DaoVehiculoList implements DaoList<Vehiculo>, Serializable {
 	 */
 	public boolean loadAll(String fichero) {
 		boolean result = false;
-		/*************** Serialización binaria java *************
+		
 		try
         { 
-        	
-     		ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fichero)); 
-        		listaVehiculos = (ArrayList<Vehiculo>) ois.readObject();
-        		result = true;
-        } catch (IOException | ClassNotFoundException e) { 
+        	BufferedReader br = new BufferedReader( new FileReader(fichero));
+     		String linea;
+        	while ((linea = br.readLine())!= null) {
+     			Vehiculo v = new Vehiculo(linea);
+     			listaVehiculos.add(v);
+     		}
+        	br.close();
+        } catch (IOException e) { 
 		result = false;
 		//e.printStackTrace();
 		}
-		***************************************************************/
+
 		return result;
 	}
 	
@@ -111,16 +118,12 @@ public class DaoVehiculoList implements DaoList<Vehiculo>, Serializable {
 	public boolean saveAll(String fichero) throws IOException {
 		boolean result = false;
 		
-		/*************** Serialización binaria java *************
-	       try 	{
-			   	  ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fichero)); 
-			               oos.writeObject(listaVehiculos);
-			               result = true;
-			   	} catch (IOException e) {
-			   		result = false;
-			   		//e.printStackTrace();
-			   		}  
-		*********************************************************/	
+		BufferedWriter bw = new BufferedWriter( new FileWriter(fichero));
+ 		for (Vehiculo v : listaVehiculos) {
+ 			bw.write(v.toCsv());
+ 			bw.newLine();
+ 		}
+    	bw.close();	
 		return result;
 	}
 

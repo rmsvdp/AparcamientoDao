@@ -20,6 +20,7 @@ import javax.swing.JFrame;
  * - Constructor , especificando ancho y alto
  * - Fijar color de un elemento a negro
  * - Fijar color de un elemento a blanco
+ * - Fijar color entre la paleta de colores disponible en SWing
  * @author root
  *
  */
