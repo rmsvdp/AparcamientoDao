@@ -24,4 +24,19 @@ public class Controlador {
         av.turnOff();
    }
 
+	/**
+	 * Enciende / apaga led del panel en función de que
+	 * la plaza esté ocupada o vacía
+	 * @param plazas array de plazas del objeto aparcamiento
+	 */
+	public void updatePanel(String[][] plazas) {
+		for (int i=0; i< plazas.length;i++) {
+			for (int j=0; j< plazas[0].length;j++) {
+				if (plazas[i][j].equals(""))
+					av.Item_Off(i, j);
+				else
+					av.Item_On(i, j);
+			} // col
+		} // fil
+	} // updatePanel
 }

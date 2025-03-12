@@ -82,7 +82,9 @@ public class AppMain {
 
 		m.setTitulo("APARCAMIENTO : " + apm.getNombre());
 		m.setOpciones(opc);
-		//Controlador c = new Controlador(10,10);
+		Controlador c = new Controlador(apm.getNumFilas(),apm.getNumColumnas());
+		c.av.showPanel(true);
+		c.updatePanel(apm.getPlaza()); // Actualiza el aparcamiento
 		while (!salir) {
 			
 			m.mostrar();// Mostrar el menú
@@ -107,13 +109,14 @@ public class AppMain {
 				case 0: 
 					salir = true;
 			} // opciones			
+			c.updatePanel(apm.getPlaza()); // Actualiza el aparcamiento
 			
 		} // bucle principal de la aplicación
 		
 		// Operaciones de cierre de la aplicación ---------------------------------------------------------
 		//System.out.println("\nVolcando información a disco...\n");
 		//save(STORAGE); // Guarda la información
-		//c.av.showPanel(false);
+		c.av.showPanel(false);
 		System.out.println("\nAplicación Terminada.\n");
 	} // end run
 
@@ -124,6 +127,7 @@ public class AppMain {
 		c.av.squareDemo(co, 0);
 		c.av.Item_Color(3, 2, co);c.av.Item_Color(3, 7, co);c.av.Item_Color(5, 4, co);c.av.Item_Color(5, 5, co);
 		c.av.Item_Color(7, 3, co);c.av.Item_Color(7, 4, co);c.av.Item_Color(7, 5, co);c.av.Item_Color(7, 6, co);
+		c.av.showPanel(true);
 	}
 /**
  * Añade un vehículo nuevo al sistema
@@ -146,6 +150,7 @@ public class AppMain {
 			apm.lstVehiculos.insertOne(v);			// Añadirlo a la lista de vehiculos
 			apm.lstEs.insertOne(new Es(matricula,true,LocalDateTime.now()));
 			save(STORAGE); // Guarda la información
+			apm.aparcarVehiculo(matricula);
 			
 		}
 			
@@ -166,6 +171,7 @@ public class AppMain {
 			// Registrar entrada-salida
 			apm.lstEs.insertOne(new Es(matricula,false,LocalDateTime.now()));
 			save(STORAGE); // Guarda la información
+			apm.retirarVehiculo(matricula);
 		}
 
 	}
@@ -285,7 +291,8 @@ public class AppMain {
 					for (int i=0;i<listaEjemplo.length;i++ ) {
 						this.apm.lstVehiculos.insertOne(listaEjemplo[i]);
 						this.apm.lstEs.insertOne(new Es(listaEjemplo[i].getMatricula(),true,LocalDateTime.now()));
-				 }
+						apm.aparcarVehiculo(listaEjemplo[i].getMatricula());
+					}
 	        }
 	} // init()
 	/**
