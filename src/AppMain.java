@@ -1,10 +1,12 @@
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 import Model.Vehiculo;
 import Model.Aparcamiento;
+import Model.Es;
 import controller.Controlador;
 import tools.Menu;
 
@@ -109,8 +111,8 @@ public class AppMain {
 		} // bucle principal de la aplicación
 		
 		// Operaciones de cierre de la aplicación ---------------------------------------------------------
-		System.out.println("\nVolcando información a disco...\n");
-		save(STORAGE); // Guarda la información
+		//System.out.println("\nVolcando información a disco...\n");
+		//save(STORAGE); // Guarda la información
 		//c.av.showPanel(false);
 		System.out.println("\nAplicación Terminada.\n");
 	} // end run
@@ -142,7 +144,8 @@ public class AppMain {
 			Integer fecha = sc.nextInt();
 			Vehiculo v = new Vehiculo(matricula,color,fecha);
 			apm.lstVehiculos.insertOne(v);			// Añadirlo a la lista de vehiculos
-
+			apm.lstEs.insertOne(new Es(matricula,true,LocalDateTime.now()));
+			save(STORAGE); // Guarda la información
 			
 		}
 			
@@ -160,6 +163,9 @@ public class AppMain {
 		}
 		else {
 			apm.lstVehiculos.deleteOne(matricula);
+			// Registrar entrada-salida
+			apm.lstEs.insertOne(new Es(matricula,false,LocalDateTime.now()));
+			save(STORAGE); // Guarda la información
 		}
 
 	}
@@ -248,7 +254,7 @@ public class AppMain {
 	public int comprobarMatricula(String matricula) {
 		int result =  -1;
 		ArrayList<Vehiculo> al;
-		al = apm.getListaVehiculos();
+		al = apm.lstVehiculos.findAll();
 		for (int i = 0; i < al.size();i++) {
 			Vehiculo v1 = al.get(i);
 			if (v1.getMatricula().equals(matricula)) {
@@ -278,6 +284,7 @@ public class AppMain {
 					this.apm = new Aparcamiento("GOYA");
 					for (int i=0;i<listaEjemplo.length;i++ ) {
 						this.apm.lstVehiculos.insertOne(listaEjemplo[i]);
+						this.apm.lstEs.insertOne(new Es(listaEjemplo[i].getMatricula(),true,LocalDateTime.now()));
 				 }
 	        }
 	} // init()

@@ -10,9 +10,8 @@ public class Aparcamiento  implements Serializable {
 	private int numColumnas ;   // Plazas por fila o pasillo
 	private String[][] plaza;  // Plaza de aparcamiento
 	private ArrayList<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
-	public DaoVehiculoMap mapVehiculos = new DaoVehiculoMap();
 	public DaoVehiculoList lstVehiculos = new DaoVehiculoList();
-	
+	public DaoEsList lstEs = new DaoEsList();
 	private static final long serialVersionUID = 1L;
 	
 	public Aparcamiento() {
