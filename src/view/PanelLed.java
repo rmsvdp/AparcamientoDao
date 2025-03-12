@@ -101,7 +101,7 @@ public class PanelLed extends JFrame {
 	 */
 	private BitMap[][] matrix;	// Matriz para integración con la clase Tira
    /**
-    * Constructor principal
+    * Constructor principal, incializa pero no visualiza
     * @param ancho	Número de elementos de ancho
     * @param alto	Número de elementos de alto
     */
@@ -179,24 +179,24 @@ public class PanelLed extends JFrame {
                             	default:	// Desactivado
                             		break;
                             	} // switch
-            	               
-                                      
                             }}); 
                         
                         add(this.tablero[j][i]);
                     } // alto
                 } // ancho
-
-   
-        setVisible(true);
-    }
+                showPanel(false);
+   }//PanelLed(int ancho, int alto)
    
 public int getAncho() {	return ancho;}
 public void setAncho(int ancho) {	this.ancho = ancho;}
 public int getAlto() {	return alto;}
 public void setAlto(int alto) {	this.alto = alto;}
 
-
+/**
+ * Hace visible u oculta la ventana del panel
+ * @param flag true = visible , false = oculto
+ */
+public void showPanel(boolean flag) {    setVisible(flag);}
 /**
     * Fija fondo de un determinado color para el elemento
     * @param i Fila del array
