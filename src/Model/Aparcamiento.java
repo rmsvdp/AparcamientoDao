@@ -1,7 +1,10 @@
 package Model;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Aparcamiento  implements Serializable {
 
@@ -35,18 +38,15 @@ public class Aparcamiento  implements Serializable {
 	}
 
 
-	public int getNumFilas() {		return numFilas;	}
-	public void setNumFilas(int numFilas) {		this.numFilas = numFilas;	}
-	public int getNumColumnas() {		return numColumnas;	}
-	public void setNumColumnas(int numColumnas) {		this.numColumnas = numColumnas;	}
+	public int getNumFilas() 								 {	return numFilas;				}
+	public void setNumFilas(int numFilas) 					 {	this.numFilas = numFilas;		}
+	public int getNumColumnas() 							 {	return numColumnas;				}
+	public void setNumColumnas(int numColumnas)  			 {	this.numColumnas = numColumnas;	}
+	public String[][] getPlaza() 							 {	return plaza;					}
 
-
-	public String[][] getPlaza() {		return plaza;	}
-
-
-	public String getNombre() 								 {	return nombre;	}
-	public void setNombre(String nombre) 					 {	this.nombre = nombre;	}
-	public ArrayList<Vehiculo> getListaVehiculos() 			 {	return listVehiculos;	}
+	public String getNombre() 								 {	return nombre;					}
+	public void setNombre(String nombre) 					 {	this.nombre = nombre;			}
+	public ArrayList<Vehiculo> getListaVehiculos() 			 {	return listVehiculos;			}
 	public void setListVehiculos(ArrayList<Vehiculo> plazas) {	this.listVehiculos = plazas;	}
 	
 	/** Buscar una plaza libre y la asigna
@@ -100,4 +100,17 @@ public class Aparcamiento  implements Serializable {
 		return false;
 	} // buscarVehiculos
 	
+	public String toJson() {
+		
+		String valor ="";
+		ObjectMapper mapeador= new ObjectMapper();
+		
+		try {
+			valor = mapeador.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		return valor;
+	}
 }

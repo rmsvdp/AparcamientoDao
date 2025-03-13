@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import Model.Vehiculo;
 import Model.Aparcamiento;
+import Model.DaoAparcamientoList;
 import Model.Es;
 import controller.Controlador;
 import tools.Menu;
@@ -33,7 +34,7 @@ public class AppMain {
 	 */
 	public static final String STORAGE = "Aparcamiento.dat";
 	public Aparcamiento apm;	
-	
+	public DaoAparcamientoList aplist = new DaoAparcamientoList();
 	/**
 	 * Datos de prueba
 	 */
@@ -58,6 +59,8 @@ public class AppMain {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		AppMain ap = new AppMain();
+//		Aparcamiento apa = new Aparcamiento("Velazquez");
+//		System.out.println(apa.toJson());
 		ap.run();
 		
 	} // end Main
@@ -288,6 +291,7 @@ public class AppMain {
 	        else {
 	        		System.out.println("\nGenerando datos de prueba ...\n");
 					this.apm = new Aparcamiento("GOYA");
+			
 					for (int i=0;i<listaEjemplo.length;i++ ) {
 						this.apm.lstVehiculos.insertOne(listaEjemplo[i]);
 						this.apm.lstEs.insertOne(new Es(listaEjemplo[i].getMatricula(),true,LocalDateTime.now()));
