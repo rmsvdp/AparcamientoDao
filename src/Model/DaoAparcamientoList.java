@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,20 +24,6 @@ public class DaoAparcamientoList implements DaoList<Aparcamiento>{
 	}
 
 	public ArrayList<Aparcamiento> findAll(){
-		
-		 ObjectMapper objectMapper = new ObjectMapper();
-	       
-	            // Leer el archivo JSON y mapearlo a una lista de objetos Aparcamiento
-	            try {
-					listaAparcamientos = objectMapper.readValue(
-					        new File("personas.json"),
-					        new TypeReference<ArrayList<Aparcamiento>>() {}
-					);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
 		return listaAparcamientos;
 	}
 	public Aparcamiento findOne(String key) {
@@ -44,18 +33,8 @@ public class DaoAparcamientoList implements DaoList<Aparcamiento>{
 	public boolean insertOne(Aparcamiento ap) {
 		boolean result;
 		listaAparcamientos.add(ap);
-		String cadena = arrayToJson();
-		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(DAT_AP));
-			bw.write(cadena);
-			bw.close();
-			result = true;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			result = false;
-		}
-		return true;
+		return saveJson();					// Almacena en disco
+
 	}
 	public boolean deleteOne(String key) {
 		// TODO implementar
@@ -66,20 +45,41 @@ public class DaoAparcamientoList implements DaoList<Aparcamiento>{
 		return true;
 	}
 	
-	public String arrayToJson() {
-		String jsonArray = "";
+	public boolean loadJson() {
 		
-        try {
-        	ObjectMapper objectMapper = new ObjectMapper();
-            jsonArray = objectMapper.writeValueAsString(listaAparcamientos);
-
-        }
-        catch (JsonProcessingException e) {
-           // e.printStackTrace();
-        }
-		
-		return jsonArray;
-		
+		boolean result = false;		
+		 ObjectMapper objectMapper = new ObjectMapper();
+		 objectMapper.registerModule(new JavaTimeModule());
+		 objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	        
+         try {// Leer el archivo JSON y mapearlo a una lista de objetos Aparcamiento
+				listaAparcamientos = objectMapper.readValue(
+				        new File(DAT_AP),
+				        new TypeReference<ArrayList<Aparcamiento>>() {}
+				);
+				result = true;
+         } catch (IOException e) {
+				e.printStackTrace();
+			}
+		return result;
 	}
-	
+	public boolean saveJson() {
+		String cadena = "";
+		boolean result = false;
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(DAT_AP));
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.registerModule(new JavaTimeModule());
+			objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);    
+            cadena = objectMapper.writeValueAsString(listaAparcamientos);
+			bw.write(cadena);
+			bw.close();
+			result = true;
+		} catch (IOException e) {
+			e.printStackTrace();			// TODO Auto-generated catch block
+			result = false;
+		}
+	return result;
+	} 
 }

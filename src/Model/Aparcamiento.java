@@ -2,16 +2,19 @@ package Model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@JsonIgnoreProperties ({"listVehiculos","lstVehiculos","lstEs"})
 public class Aparcamiento  implements Serializable {
 
 	private String nombre;
 	private int numFilas ;		// Filas o pasillos de aparcamiento
 	private int numColumnas ;   // Plazas por fila o pasillo
 	private String[][] plaza;  // Plaza de aparcamiento
+	
 	private ArrayList<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
 	public DaoVehiculoList lstVehiculos = new DaoVehiculoList();
 	public DaoEsList lstEs = new DaoEsList();

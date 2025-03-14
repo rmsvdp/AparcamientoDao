@@ -121,6 +121,7 @@ public class AppMain {
 		//save(STORAGE); // Guarda la información
 		c.av.showPanel(false);
 		System.out.println("\nAplicación Terminada.\n");
+		System.exit(0);
 	} // end run
 
 	
@@ -152,9 +153,8 @@ public class AppMain {
 			Vehiculo v = new Vehiculo(matricula,color,fecha);
 			apm.lstVehiculos.insertOne(v);			// Añadirlo a la lista de vehiculos
 			apm.lstEs.insertOne(new Es(matricula,true,LocalDateTime.now()));
-			save(STORAGE); // Guarda la información
 			apm.aparcarVehiculo(matricula);
-			
+			save(STORAGE); // Guarda la información
 		}
 			
 	} // addVehiculo()
@@ -173,8 +173,8 @@ public class AppMain {
 			apm.lstVehiculos.deleteOne(matricula);
 			// Registrar entrada-salida
 			apm.lstEs.insertOne(new Es(matricula,false,LocalDateTime.now()));
-			save(STORAGE); // Guarda la información
 			apm.retirarVehiculo(matricula);
+			save(STORAGE); // Guarda la información
 		}
 
 	}
@@ -291,12 +291,14 @@ public class AppMain {
 	        else {
 	        		System.out.println("\nGenerando datos de prueba ...\n");
 					this.apm = new Aparcamiento("GOYA");
-			
 					for (int i=0;i<listaEjemplo.length;i++ ) {
 						this.apm.lstVehiculos.insertOne(listaEjemplo[i]);
-						this.apm.lstEs.insertOne(new Es(listaEjemplo[i].getMatricula(),true,LocalDateTime.now()));
-						apm.aparcarVehiculo(listaEjemplo[i].getMatricula());
+						String matricula = listaEjemplo[i].getMatricula();
+						this.apm.lstEs.insertOne(new Es(matricula,true,LocalDateTime.now()));
+						this.apm.aparcarVehiculo(matricula);
 					}
+					aplist.insertOne(apm);
+					save(STORAGE);
 	        }
 	} // init()
 	/**
@@ -310,9 +312,9 @@ public class AppMain {
 		
 		// TODO salvar aparcamiento completo	
 		try {
-			apm.lstVehiculos.saveAll(fichero);
+			apm.lstVehiculos.saveAll(fichero);  // Salvo lista vehiculos;
+			aplist.saveJson();					// Salvo objeto aparcamiento;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} // salva lstVehiculos;
 		
@@ -329,8 +331,15 @@ public class AppMain {
 
 		boolean result = false;
  	
-		this.apm = new Aparcamiento("GOYA"); // TODO presevar objeto aparacmiento			
-		apm.lstVehiculos.loadAll(fichero); // recupera lstVehiculos;	
+		aplist.loadJson();
+		if (aplist.listaAparcamientos.size()>=1) {
+		this.apm = aplist.listaAparcamientos.get(0); // recupero el primero solo
+		apm.lstVehiculos.loadAll(fichero); // recupera lstVehiculos;
+		}
+		else {
+			System.out.println("Error al recuperar datos, terminado aplicación");
+			System.exit(0);
+		}
 		return result;
 		
 	}
